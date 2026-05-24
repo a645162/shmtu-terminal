@@ -1,0 +1,9 @@
+[submodule "shmtu-terminal-tauri"]
+	path = shmtu-terminal-tauri
+	url = https://github.com/a645162/shmtu-terminal-tauri.git
+[submodule "shmtu-terminal-desktop"]
+	path = shmtu-terminal-desktop
+	url = https://github.com/a645162/shmtu-terminal-desktop.git
+[submodule "shmtu-terminal-android"]
+	path = shmtu-terminal-android
+	url = https://github.com/a645162/shmtu-terminal-android.git
