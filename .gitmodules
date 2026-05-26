@@ -7,3 +7,9 @@
 [submodule "shmtu-terminal-android"]
 	path = shmtu-terminal-android
 	url = https://github.com/a645162/shmtu-terminal-android.git
+[submodule "Server/shmtu-cas-ocr-server"]
+	path = Server/shmtu-cas-ocr-server
+	url = https://github.com/a645162/shmtu-cas-ocr-server.git
+[submodule "Server/shmtu-service-monitor"]
+	path = Server/shmtu-service-monitor
+	url = https://github.com/a645162/shmtu-service-monitor.git
