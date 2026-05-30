@@ -1,10 +1,12 @@
 # SHMTU Terminal
 
-上海海事大学校园终端应用，包含三个子模块：
+上海海事大学校园终端应用，包含三个子模块和两个 Server 子模块：
 
 - **shmtu-terminal-tauri** — Tauri v2 桌面应用 (Rust 后端 + React/TypeScript 前端)
 - **shmtu-terminal-desktop** — .NET 8 桌面应用及 CAS/OCR 库
 - **shmtu-terminal-android** — Android 客户端 (Kotlin)
+- **Server/shmtu-cas-ocr-server** — C++ OCR 服务 (Drogon + ncnn, 支持 CPU/Vulkan GPU)
+- **Server/shmtu-service-monitor** — 服务监控
 
 ## 子模块开发命令
 
@@ -39,9 +41,23 @@ cd shmtu-terminal-android
 ./gradlew installDebug         # 安装到设备
 ```
 
+### Server/shmtu-cas-ocr-server
+
+```bash
+cd Server/shmtu-cas-ocr-server
+# Docker 多阶段构建 (CPU/Vulkan)
+docker build -f Dockerfile --target runtime-cpu -t shmtu-ocr-server:cpu .
+docker build -f Dockerfile --target runtime-gpu -t shmtu-ocr-server:vulkan .
+# System 依赖构建 (需 Docker builder 镜像)
+python3 scripts/_common.py     # 查看构建目录结构
+./scripts/ci_build_system_vulkan.sh  # CI 构建 Vulkan 版本
+```
+
 ## 架构要点
 
 - Tauri 子模块是主要开发焦点，后端 Rust 负责同步/存储/加密，前端 React + Fluent UI
 - 同步流程支持三种验证码模式：手动输入、远程 OCR、本地 ONNX
 - 身份 (Identity) → 多账号 (Account) 层级结构，支持身份级和账号级增量/全量同步
 - .NET 子模块提供 CAS 认证库和 OCR ONNX 推理服务
+- OCR Server 子模块使用多阶段 Dockerfile，支持 CPU (`runtime-cpu`) 和 Vulkan GPU (`runtime-gpu`) 两个构建目标
+- CI Workflow (`.github/workflows/build-system-vulkan.yml`) 采用 CPU/Vulkan 并行构建 → GHCR 推送 → DockerHub/阿里云并行分发模式
