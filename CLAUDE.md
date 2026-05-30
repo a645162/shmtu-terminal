@@ -1,12 +1,13 @@
 # SHMTU Terminal
 
-上海海事大学校园终端应用，包含三个子模块和两个 Server 子模块：
+上海海事大学校园终端应用，包含三个子模块和三个 Server 子模块：
 
 - **shmtu-terminal-tauri** — Tauri v2 桌面应用 (Rust 后端 + React/TypeScript 前端)
 - **shmtu-terminal-desktop** — .NET 8 桌面应用及 CAS/OCR 库
 - **shmtu-terminal-android** — Android 客户端 (Kotlin)
 - **Server/shmtu-cas-ocr-server** — C++ OCR 服务 (Drogon + ncnn, 支持 CPU/Vulkan GPU)
 - **Server/shmtu-service-monitor** — 服务监控
+- **Server/smu-badminton** — 羽毛球场预约系统 (FastAPI + NCNN OCR, SQLite)
 
 ## 子模块开发命令
 
@@ -53,6 +54,19 @@ python3 scripts/_common.py     # 查看构建目录结构
 ./scripts/ci_build_system_vulkan.sh  # CI 构建 Vulkan 版本
 ```
 
+### Server/smu-badminton
+
+```bash
+cd Server/smu-badminton
+pip install -e .                                          # 安装 (可编辑模式)
+python -m smu_badminton.server_fastapi                    # 启动开发服务器 (端口 5002, 自动重载)
+BOOKING_DEBUG=1 python -m smu_badminton.server_fastapi    # 调试模式 (详细预约日志)
+docker-compose up --build                                 # 生产部署
+python -m pytest tests/ -v                                # 运行全部测试
+python -m pytest tests/unit/ -v                           # 仅单元测试
+python -m pytest tests/integration/ -v                    # 仅集成测试
+```
+
 ## 架构要点
 
 - Tauri 子模块是主要开发焦点，后端 Rust 负责同步/存储/加密，前端 React + Fluent UI
@@ -61,3 +75,6 @@ python3 scripts/_common.py     # 查看构建目录结构
 - .NET 子模块提供 CAS 认证库和 OCR ONNX 推理服务
 - OCR Server 子模块使用多阶段 Dockerfile，支持 CPU (`runtime-cpu`) 和 Vulkan GPU (`runtime-gpu`) 两个构建目标
 - CI Workflow (`.github/workflows/build-system-vulkan.yml`) 采用 CPU/Vulkan 并行构建 → GHCR 推送 → DockerHub/阿里云并行分发模式
+- Badminton 子模块是 FastAPI 羽毛球场预约系统，集成 CAS 认证 + NCNN OCR 验证码识别，支持即时预约和定时预约（多线程并发抢场）
+- Badminton 核心流程：CAS 登录 → OCR 识别验证码 → 查询场地可用性 → 即时/定时预约；定时预约使用 barrier 同步多线程同时发起请求
+- Badminton 使用线程安全 SQLite (WAL 模式) 存储预约记录和任务持久化，公开可用性缓存 60s TTL 跨用户共享
