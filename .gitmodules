@@ -13,6 +13,11 @@
 [submodule "Server/shmtu-service-monitor"]
 	path = Server/shmtu-service-monitor
 	url = https://github.com/a645162/shmtu-service-monitor.git
+
+[submodule "Server/shmtu-server-unofficial"]
+	path = Server/shmtu-server-unofficial
+	url = git@github.com:a645162/shmtu-server-unofficial.git
+
 [submodule "Server/smu-badminton"]
 	path = Server/smu-badminton
 	url = https://github.com/YahelLiu/smu-badminton.git
