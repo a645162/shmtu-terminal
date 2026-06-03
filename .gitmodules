@@ -16,3 +16,6 @@
 [submodule "Server/smu-badminton"]
 	path = Server/smu-badminton
 	url = https://github.com/YahelLiu/smu-badminton.git
+[submodule "Server/shmtu-monitor"]
+	path = Server/shmtu-monitor
+	url = https://github.com/a645162/shmtu-monitor.git
