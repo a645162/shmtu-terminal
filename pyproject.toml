@@ -1,0 +1,76 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "shmtu-terminal"
+version = "0.1.0"
+description = "上海海事大学校园终端聚合包（聚合 CAS / OCR / 同步等子模块能力）"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Haomin Kong" }]
+keywords = ["shmtu", "shanghai-maritime-university", "terminal", "cas", "captcha"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.4",
+    "build>=1.0",
+]
+cas = [
+    # 子模块: Lib/shmtu-cas-python 提供的上海海事大学 CAS Python 库
+    # 本地可编辑安装: pip install -e ./Lib/shmtu-cas-python
+]
+ocr = [
+    # OCR 子能力按需启用（具体依赖见各 Server 子模块）
+]
+
+[project.urls]
+Homepage = "https://github.com/HaominKong/shmtu-terminal"
+Repository = "https://github.com/HaominKong/shmtu-terminal"
+
+[project.scripts]
+shmtu-terminal = "shmtu_terminal.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/shmtu_terminal"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/shmtu_terminal",
+    "README.md",
+    "pyproject.toml",
+]
+
+[tool.hatch.version]
+path = "src/shmtu_terminal/__init__.py"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "ASYNC", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
