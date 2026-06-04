@@ -1,6 +1,6 @@
 # SHMTU Terminal
 
-上海海事大学校园终端应用，包含三个子模块和四个 Server 子模块：
+上海海事大学校园终端应用，包含三个客户端子模块、四个 Server 子模块和浏览器插件子模块：
 
 - **shmtu-terminal-tauri** — Tauri v2 桌面应用 (Rust 后端 + React/TypeScript 前端)
 - **shmtu-terminal-desktop** — .NET 8 桌面应用及 CAS/OCR 库
@@ -9,6 +9,7 @@
 - **Server/shmtu-service-monitor** — 服务监控
 - **Server/smu-badminton** — 羽毛球场预约系统 (FastAPI + NCNN OCR, SQLite)
 - **Server/shmtu-server-unofficial** — Spring Boot 后端服务 (Kotlin JVM)，引用 shmtu-cas-kotlin 的 cas_lib (JVM) 子模块
+- **Plugin/shmtu-cas-ocr-crx** — 浏览器扩展 (Chrome Extension)，用于 CAS 验证码 OCR 自动识别
 
 ## API
 

@@ -27,3 +27,6 @@
 [submodule "Lib/shmtu-cas-python"]
 	path = Lib/shmtu-cas-python
 	url = https://github.com/a645162/shmtu-cas-python.git
+[submodule "Plugin/shmtu-cas-ocr-crx"]
+	path = Plugin/shmtu-cas-ocr-crx
+	url = git@github.com:a645162/shmtu-cas-ocr-crx.git

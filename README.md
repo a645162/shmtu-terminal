@@ -3,6 +3,16 @@
 上海海事大学校园终端聚合包，提供 CLI 入口与 Python SDK，聚合仓库内各子模块
 （CAS / OCR / 同步等）能力。
 
+## Clone
+
+```bash
+git clone --recurse-submodules https://github.com/a645162/shmtu-terminal
+```
+
+```bash
+git submodule update --init --recursive
+```
+
 ## 安装
 
 仓库根目录本身就是可独立构建/安装的 Python 项目（`src/` 布局）：
@@ -43,5 +53,6 @@ print(greet("SHMTU"))      # 'Hello, SHMTU!'
 | shmtu-cas-ocr-server | `Server/shmtu-cas-ocr-server` | C++ OCR 服务 |
 | smu-badminton | `Server/smu-badminton` | 羽毛球场预约系统 |
 | shmtu-server-unofficial | `Server/shmtu-server-unofficial` | Spring Boot 后端服务 |
+| shmtu-cas-ocr-crx | `Plugin/shmtu-cas-ocr-crx` | 浏览器扩展 (Chrome Extension)，CAS 验证码 OCR 自动识别 |
 
 子模块各自维护 `pyproject.toml` / `build.gradle` / `Cargo.toml`，与本聚合包独立。
