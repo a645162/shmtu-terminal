@@ -44,6 +44,14 @@ Documents/
 | [`docs/feature-spec.md`](./docs/feature-spec.md) | 功能规划（P0/P1/P2 + 客户端对标） |
 | [`docs/ui-design.md`](./docs/ui-design.md) | 界面设计（Avalonia 多窗口 vs Tauri 单页多路由） |
 | [`docs/statistics-design.md`](./docs/statistics-design.md) | 账单统计模块详细设计 |
+| [`docs/classifier.md`](./docs/classifier.md) | **账单分类器** (BillClassifier / PositionTranslator / MealClassifier / TomlLightweight) |
+| [`docs/toml-format.md`](./docs/toml-format.md) | **TOML 数据库格式规范** (type/position/schedule/rules 4 个文件) |
+| [`docs/parser.md`](./docs/parser.md) | **BillParser 账单解析** (HTML → BillItem) |
+| [`docs/getting-started.md`](./docs/getting-started.md) | **快速集成 shmtu-cas-kotlin** |
+| [`docs/android-integration.md`](./docs/android-integration.md) | **Android 端集成 cas_lib 指南** |
+| [`docs/android-bill-flow.md`](./docs/android-bill-flow.md) | **Android 账单按 TOML 翻译完整链路** (5 层数据流 + Tauri 命令映射) |
+| [`docs/android-settings.md`](./docs/android-settings.md) | **Android 多级设置页结构与 Tauri 映射表** (10 Tab) |
+| [`docs/android-architecture.md`](./docs/android-architecture.md) | **Android 端架构** (MVVM + Hilt + Room + Compose) |
 
 ## 二、开发日志
 
