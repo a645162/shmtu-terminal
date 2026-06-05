@@ -59,9 +59,6 @@ val classifier = BillClassifier.fromToml(toml)
 // 方式 2: 合并 rules.toml (含 type + position + schedule 三段)
 val rules = assets.open("bill/rules.toml").bufferedReader().readText()
 val classifier = BillClassifier.fromRulesToml(rules)
-
-// 方式 3: 旧版 JSON 兼容
-val classifier = BillClassifier.fromJson(jsonStr)
 ```
 
 ### TOML 格式

@@ -78,3 +78,31 @@ room = "校医院"
 [position.keywords."教育超市"]
 building = "校园商业"
 room = "教育超市"
+
+# [position.keywords."一卡通"]
+# building = "待补充"
+# room = "待补充"
+
+# [position.keywords."B1商店"]
+# building = "待补充"
+# room = "待补充"
+
+[position.keywords."电控商户"]
+building = "海馨楼"
+room = "海馨第7食堂"
+
+# [position.keywords."A7食堂"]
+# building = "待补充"
+# room = "待补充"
+
+# [position.keywords."新校二店"]
+# building = "待补充"
+# room = "待补充"
+
+[position.keywords."B食堂3楼"]
+building = "海琴楼"
+room = "海琴3楼(教工食堂)"
+
+[position.keywords."新开水"]
+building = "开水"
+room = "宿舍"
