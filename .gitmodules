@@ -16,17 +16,17 @@
 
 [submodule "Server/shmtu-server-unofficial"]
 	path = Server/shmtu-server-unofficial
-	url = git@github.com:a645162/shmtu-server-unofficial.git
+	url = https://github.com/a645162/shmtu-server-unofficial.git
 
 [submodule "Server/smu-badminton"]
 	path = Server/smu-badminton
 	url = https://github.com/YahelLiu/smu-badminton.git
 [submodule "Model/shmtu-cas-ocr-model"]
 	path = Model/shmtu-cas-ocr-model
-	url = git@github.com:a645162/shmtu-cas-ocr-model.git
+	url = https://github.com/a645162/shmtu-cas-ocr-model.git
 [submodule "Lib/shmtu-cas-python"]
 	path = Lib/shmtu-cas-python
 	url = https://github.com/a645162/shmtu-cas-python.git
 [submodule "Plugin/shmtu-cas-ocr-crx"]
 	path = Plugin/shmtu-cas-ocr-crx
-	url = git@github.com:a645162/shmtu-cas-ocr-crx.git
+	url = https://github.com/a645162/shmtu-cas-ocr-crx.git
