@@ -3,7 +3,7 @@
 上海海事大学校园终端应用，包含三个客户端子模块、四个 Server 子模块和浏览器插件子模块：
 
 - **shmtu-terminal-tauri** — Tauri v2 桌面应用 (Rust 后端 + React/TypeScript 前端)
-- **shmtu-terminal-desktop** — .NET 8 桌面应用及 CAS/OCR 库
+- **shmtu-terminal-desktop** — .NET 8 桌面应用及 CAS/OCR 库（维护模式，非活跃开发）
 - **shmtu-terminal-android** — Android 客户端 (Kotlin)
 - **Server/shmtu-cas-ocr-server** — C++ OCR 服务 (Drogon + ncnn, 支持 CPU/Vulkan GPU)
 - **Server/shmtu-service-monitor** — 服务监控
