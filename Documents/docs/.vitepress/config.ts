@@ -48,6 +48,7 @@ export default defineConfig({
           { text: 'Android 账单翻译链路', link: '/android-bill-flow' },
           { text: 'Android 多级设置', link: '/android-settings' },
           { text: 'Android 端架构', link: '/android-architecture' },
+          { text: 'OCR 模型 v1 / v2 共存', link: '/ocr-model-versions' },
         ],
       },
       {
