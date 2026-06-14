@@ -37,3 +37,6 @@
 [submodule "Server/smu-badminton"]
 	path = Server/smu-badminton
 	url = https://github.com/YahelLiu/smu-badminton.git
+[submodule "Server/shmtu-auth"]
+	path = Server/shmtu-auth
+	url = git@github.com:a645162/shmtu-auth.git
