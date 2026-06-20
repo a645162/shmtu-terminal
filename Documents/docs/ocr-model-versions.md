@@ -135,6 +135,78 @@ curl -X POST http://localhost:21600/api/ocr \
 - 现有 v1 部署：在设置面板切换至 v1 验证通过后再切换到 v2；如需保留 v1 行为可在配置中显式指定。
 - A/B 对比：v1/v2 在同一台机器上可同时存在（不同目录），切换无副作用。
 
+## 把手机 / Tauri 桌面变成 OCR 推理服务器
+
+为方便 **同网段多设备** 共享一份 NCNN / ONNX 推理资源,SHMTU Terminal 在 Android 与 Tauri
+桌面端额外暴露了 **RESTful OCR 服务器**,端点契约与 [shmtu-cas-rs/ocr-http](https://github.com/a645162/shmtu-cas-rs)
+完全一致,可直接被现有 `CaptchaOcrHttp` 客户端复用。
+
+### 核心特性
+
+| 项 | 行为 |
+|---|---|
+| 端点 | `POST /api/ocr`  (请求 `{"imageBase64": "..."}`) |
+| 响应 | `{"success": true, "expression": "3+5=8", "result": 8, "modelVersion": "V2"}` |
+| 健康检查 | `GET /api/health` 返回 `{models_loaded, model_version, status}` |
+| 状态 / 信息 | `GET /api/status` (含计数 / 平均耗时) 与 `GET /api/info` (含 token / IP) |
+| 鉴权 | `Authorization: Bearer <token>` 或 `?token=<token>` |
+| **懒加载** | **首次** `POST /api/ocr` 收到请求时才加载模型,后续请求复用热模型 (毫秒级) |
+| 默认端口 | Android: `5000` ; Tauri: `5000` (可在设置面板修改) |
+| **访问范围** | `loopback_only` (仅 127.0.0.1)、`lan` (0.0.0.0，默认)、`custom_ip` (绑定指定网卡 IP) |
+| 配置持久化 | Android: SharedPreferences `ocr_server_scope` / `ocr_server_bind_addr` ; Tauri: `[captcha].ocr_server_scope` / `ocr_server_bind_addr` |
+
+### Android (`shmtu-terminal-android`)
+
+- 模块: `app/src/main/java/cn/edu/shmtu/terminal/android/data/ocrserver/`
+  - `OcrServerSettings` — 端口 / token / 模型版本 / v2 backbone+precision / scope 持久化
+  - `OcrServerScope` 枚举 — `LOOPBACK_ONLY` / `LAN` / `CUSTOM_IP`
+  - `OcrWebServer` — 基于 NanoHTTPD, `start(port, bindHost)` 由 scope 决定 bind IP; 首次 POST 触发 `NcnnModelLoader.ensureLoaded`
+  - `OcrServerService` — 前台服务 (常驻通知 + 启停控制)
+- 协议对齐: 与 `CaptchaOcrHelper.buildExprString` 直接对接,保证 v1/v2 自动兼容
+- 触发: 设置面板开关 / `ocr_server_auto_start=true` 自启 / 通知栏 Action
+
+### Tauri 桌面 (`shmtu-terminal-tauri`)
+
+- 模块: `src-tauri/src/ocr_server/`
+  - `OcrHttpServerManager` — 端口 / token / 计数 / 启停
+  - `ensure_loaded_lazy` — 首次请求在 `spawn_blocking` 中调 `OcrBackend::load`,与现有
+    `commands::captcha::do_test_captcha` 的 `local_onnx` 模式 **复用同一个 `AppState.local_ocr` 实例**
+    (不会重复加载)
+- 配置: `[captcha].ocr_server_enabled` / `ocr_server_port` / `ocr_server_scope` / `ocr_server_bind_addr` 写入 `app_config.toml`
+- Tauri 命令: `ocr_server_start({port?, scope?, bind_addr?})` / `stop` / `status` / `rotate_token`
+- 自动启动: 启动时若 `ocr_server_enabled = true`,在 `setup` 同步闭包内用
+  `tauri::async_runtime::block_on` 拉起 HTTP 监听器
+
+### 访问范围说明
+
+| Scope | Bind IP | 可达范围 | 使用场景 |
+|---|---|---|---|
+| `loopback_only` | `127.0.0.1` | 仅本机进程 | 安全敏感环境,仅供同机 Tauri/CLI 调用 |
+| `lan` (默认) | `0.0.0.0` | 本机 + 同局域网所有设备 | 家庭/实验室,多设备共享推理 |
+| `custom_ip` | 用户指定的 IP | 仅绑定该网卡 | 多网卡机器选特定网段,或绑定 VPN IP |
+
+两台客户端互相调用时，调用方需通过 `/api/info` 返回的 `bindAddress` + `ips` 字段确认目标 IP 可达。
+
+### 客户端调用示例 (任意 4 端)
+
+```kotlin
+val client = CaptchaOcrHttp("http://192.168.1.100:5000/?token=ABC...")
+val expr = client.ocrByHttp(captchaPngBytes)  // 返回 "3+5=8"
+val answer = expr.substringAfter("=").trim()  // "8"
+```
+
+### 与 Rust 端 `shmtu-ocr-server` (CLI) 的差异
+
+| 维度 | Rust `shmtu-ocr-server` | Android `OcrWebServer` | Tauri `OcrHttpServerManager` |
+|---|---|---|---|
+| 启动模型 | 启动时 `OcrBackend::load` 预加载 | **懒加载** (首次请求) | **懒加载** (首次请求) |
+| 后端 | Rust ONNX | NCNN (NCNN + OpenCV Mobile) | ONNX (ort) |
+| 端口 | 默认 `21600` (CLI 可调) | 默认 `5000` | 默认 `5000` |
+| 进程模型 | 独立 CLI / Docker | 嵌入 app 前台服务 | 嵌入 Tauri 主进程 |
+| 客户端 | 同上 | 同上 | 同上 |
+
+三者协议层兼容,客户端无需感知后端差异。
+
 ## 相关链接
 
 - C++ OCR Server 模型管理：[Documents/docs/ocr-server-model-management](https://a645162.github.io/shmtu-cas-ocr-server/guide/model-management)
